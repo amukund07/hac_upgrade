@@ -1,0 +1,87 @@
+2026-05-08 12:43:35,611 [INFO] Scraping: https://www.indianculture.gov.in/food-and-culture
+2026-05-08 12:43:36,765 [WARNING] Too little content on https://www.indianculture.gov.in/food-and-culture — skipping
+2026-05-08 12:43:38,266 [INFO] Scraping: https://www.indianculture.gov.in/ayurveda
+2026-05-08 12:43:38,928 [WARNING] Too little content on https://www.indianculture.gov.in/ayurveda — skipping
+2026-05-08 12:43:40,429 [INFO] Scraping: https://www.indianculture.gov.in/indian-knowledge-systems
+2026-05-08 12:43:41,148 [WARNING] Too little content on https://www.indianculture.gov.in/indian-knowledge-systems — skipping
+2026-05-08 12:43:42,649 [INFO] Scraping: https://www.indianculture.gov.in/yoga
+2026-05-08 12:43:43,282 [WARNING] Too little content on https://www.indianculture.gov.in/yoga — skipping
+2026-05-08 12:43:44,783 [INFO] Scraping: https://www.indianculture.gov.in/performing-arts
+2026-05-08 12:43:45,449 [WARNING] Too little content on https://www.indianculture.gov.in/performing-arts — skipping
+2026-05-08 12:43:46,950 [INFO] Scraping: https://www.indianculture.gov.in/manuscripts
+2026-05-08 12:43:47,599 [WARNING] Too little content on https://www.indianculture.gov.in/manuscripts — skipping
+2026-05-08 12:43:49,099 [INFO] Scraping: https://main.ayush.gov.in/ayurveda
+2026-05-08 12:43:52,224 [WARNING] Connection error for https://main.ayush.gov.in/ayurveda (attempt 1)
+2026-05-08 12:43:57,959 [WARNING] Connection error for https://main.ayush.gov.in/ayurveda (attempt 2)
+2026-05-08 12:44:03,590 [WARNING] Connection error for https://main.ayush.gov.in/ayurveda (attempt 3)
+2026-05-08 12:44:08,091 [INFO] Scraping: https://main.ayush.gov.in/yoga-naturopathy
+2026-05-08 12:44:10,617 [WARNING] Connection error for https://main.ayush.gov.in/yoga-naturopathy (attempt 1)
+2026-05-08 12:44:19,589 [WARNING] Connection error for https://main.ayush.gov.in/yoga-naturopathy (attempt 2)
+2026-05-08 12:44:24,788 [WARNING] Connection error for https://main.ayush.gov.in/yoga-naturopathy (attempt 3)
+2026-05-08 12:44:29,289 [INFO] Scraping: https://main.ayush.gov.in/unani
+2026-05-08 12:44:32,058 [WARNING] Connection error for https://main.ayush.gov.in/unani (attempt 1)
+2026-05-08 12:44:37,485 [WARNING] Connection error for https://main.ayush.gov.in/unani (attempt 2)
+2026-05-08 12:44:44,448 [WARNING] Connection error for https://main.ayush.gov.in/unani (attempt 3)
+2026-05-08 12:44:48,949 [INFO] Scraping: https://main.ayush.gov.in/siddha
+2026-05-08 12:44:51,104 [WARNING] Connection error for https://main.ayush.gov.in/siddha (attempt 1)
+2026-05-08 12:44:57,863 [WARNING] Connection error for https://main.ayush.gov.in/siddha (attempt 2)
+2026-05-08 12:45:03,187 [WARNING] Connection error for https://main.ayush.gov.in/siddha (attempt 3)
+2026-05-08 12:45:07,688 [INFO] Scraping: https://www.tkdl.res.in/tkdl/langdefault/common/Home.asp?GL=Eng
+2026-05-08 12:45:08,406 [WARNING] Too little content on https://www.tkdl.res.in/tkdl/langdefault/common/Home.asp?GL=Eng — skipping
+2026-05-08 12:45:09,907 [INFO] Scraping: https://nhm.gov.in/index1.php?lang=1&level=1&sublinkid=971&lid=478
+2026-05-08 12:45:13,028 [INFO] Scraping: https://www.yogamdniy.nic.in/
+2026-05-08 12:45:14,447 [WARNING] Connection error for https://www.yogamdniy.nic.in/ (attempt 1)
+2026-05-08 12:45:19,889 [WARNING] Connection error for https://www.yogamdniy.nic.in/ (attempt 2)
+2026-05-08 12:45:23,967 [WARNING] Connection error for https://www.yogamdniy.nic.in/ (attempt 3)
+2026-05-08 12:45:31,388 [INFO] Found 0 sub-links from https://www.indianculture.gov.in/stories
+2026-05-08 12:45:32,374 [INFO] Found 0 sub-links from https://www.indianculture.gov.in/culinary-culture
+2026-05-08 12:45:32,375 [INFO] Saved 1 entries → data/knowledge_base/knowledge_base_full.json
+2026-05-08 12:45:32,376 [INFO] Saved 1 entries → data/knowledge_base/domain_ayurveda.json
+2026-05-08 12:45:32,376 [INFO] Saved 1 entries → data/knowledge_base/chatbot_knowledge_base.json
+2026-05-08 12:52:30,863 [ERROR] Wikipedia API error for 'Ayurveda': HTTPSConnectionPool(host='en.wikipedia.org', port=443): Max retries exceeded with url: /w/api.php?action=query&format=json&titles=Ayurveda&prop=extracts&explaintext=True&exsectionformat=plain (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f092a88d940>: Failed to resolve 'en.wikipedia.org' ([Errno -3] Temporary failure in name resolution)"))
+2026-05-08 12:53:11,398 [ERROR] Wikipedia API error for 'Dosha': HTTPSConnectionPool(host='en.wikipedia.org', port=443): Max retries exceeded with url: /w/api.php?action=query&format=json&titles=Dosha&prop=extracts&explaintext=True&exsectionformat=plain (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f092a872e90>: Failed to resolve 'en.wikipedia.org' ([Errno -3] Temporary failure in name resolution)"))
+2026-05-08 12:53:51,931 [ERROR] Wikipedia API error for 'Panchakarma': HTTPSConnectionPool(host='en.wikipedia.org', port=443): Max retries exceeded with url: /w/api.php?action=query&format=json&titles=Panchakarma&prop=extracts&explaintext=True&exsectionformat=plain (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7f092a873890>: Failed to resolve 'en.wikipedia.org' ([Errno -3] Temporary failure in name resolution)"))
+2026-05-08 13:05:48,217 [WARNING] Wikipedia: too short — Panchakarma
+2026-05-08 13:05:51,046 [WARNING] Wikipedia: page not found — Rasayana (Ayurveda)
+2026-05-08 13:05:55,908 [WARNING] Wikipedia: too short — Ashtanga Hridayam
+2026-05-08 13:06:12,624 [WARNING] Wikipedia: too short — Zingiber officinale
+2026-05-08 13:06:19,407 [WARNING] Wikipedia: too short — Shatavari
+2026-05-08 13:06:48,666 [WARNING] Wikipedia: too short — Surya Namaskar
+2026-05-08 13:06:58,756 [WARNING] Wikipedia: too short — Ashtanga vinyasa yoga
+2026-05-08 13:07:06,817 [WARNING] Wikipedia: too short — Vipassanā
+2026-05-08 13:07:19,184 [WARNING] Wikipedia: page not found — Fermentation in food
+2026-05-08 13:07:56,160 [WARNING] Wikipedia: too short — Panchang
+2026-05-08 13:08:05,739 [INFO] Saved 59 entries → data/knowledge_base/knowledge_base_full.json
+2026-05-08 13:08:05,740 [INFO] Saved 8 entries → data/knowledge_base/domain_home_remedies.json
+2026-05-08 13:08:05,741 [INFO] Saved 22 entries → data/knowledge_base/domain_ayurveda.json
+2026-05-08 13:08:05,741 [INFO] Saved 11 entries → data/knowledge_base/domain_yoga.json
+2026-05-08 13:08:05,742 [INFO] Saved 5 entries → data/knowledge_base/domain_sustainable_farming.json
+2026-05-08 13:08:05,742 [INFO] Saved 3 entries → data/knowledge_base/domain_food___culture.json
+2026-05-08 13:08:05,742 [INFO] Saved 1 entries → data/knowledge_base/domain_unani.json
+2026-05-08 13:08:05,742 [INFO] Saved 3 entries → data/knowledge_base/domain_ancient_astronomy.json
+2026-05-08 13:08:05,742 [INFO] Saved 2 entries → data/knowledge_base/domain_vedic_mathematics.json
+2026-05-08 13:08:05,743 [INFO] Saved 4 entries → data/knowledge_base/domain_oral_history.json
+2026-05-08 13:08:05,744 [INFO] Saved 59 entries → data/knowledge_base/chatbot_knowledge_base.json
+2026-05-08 13:08:05,744 [INFO] Saved prompt_ready.txt → data/knowledge_base/
+2026-05-08 21:07:38,157 [ERROR] Static scrape error https://www.healthline.com/nutrition/ayurveda: 404 Client Error: Not Found for url: https://www.healthline.com/nutrition/ayurveda
+2026-05-08 21:07:44,292 [ERROR] Static scrape error https://www.healthline.com/health/bacopa-monnieri: 404 Client Error: Not Found for url: https://www.healthline.com/health/bacopa-monnieri
+2026-05-08 21:07:46,366 [ERROR] Static scrape error https://www.healthline.com/health/neem-oil: 404 Client Error: Not Found for url: https://www.healthline.com/health/neem-oil
+2026-05-08 21:07:50,540 [ERROR] Static scrape error https://www.healthline.com/nutrition/amla-benefits: 404 Client Error: Not Found for url: https://www.healthline.com/nutrition/amla-benefits
+2026-05-08 21:07:52,508 [ERROR] Static scrape error https://www.healthline.com/health/food-nutrition/basil: 404 Client Error: Not Found for url: https://www.healthline.com/health/food-nutrition/basil
+2026-05-08 21:07:54,433 [ERROR] Static scrape error https://www.healthline.com/health/triphala: 404 Client Error: Not Found for url: https://www.healthline.com/health/triphala
+2026-05-08 21:08:01,286 [ERROR] Static scrape error https://www.webmd.com/balance/video/meditation-benefits: 404 Client Error: Not Found for url: https://www.webmd.com/balance/video/meditation-benefits
+2026-05-08 21:08:08,419 [INFO] Saved 149 entries → data/knowledge_base/knowledge_base_full.json
+2026-05-08 21:08:08,423 [INFO] Saved 28 entries → data/knowledge_base/domain_home_remedies.json
+2026-05-08 21:08:08,424 [INFO] Saved 17 entries → data/knowledge_base/domain_yoga.json
+2026-05-08 21:08:08,426 [INFO] Saved 37 entries → data/knowledge_base/domain_ayurveda.json
+2026-05-08 21:08:08,427 [INFO] Saved 14 entries → data/knowledge_base/domain_sustainable_farming.json
+2026-05-08 21:08:08,428 [INFO] Saved 10 entries → data/knowledge_base/domain_oral_history.json
+2026-05-08 21:08:08,429 [INFO] Saved 10 entries → data/knowledge_base/domain_ancient_texts.json
+2026-05-08 21:08:08,429 [INFO] Saved 3 entries → data/knowledge_base/domain_vedic_mathematics.json
+2026-05-08 21:08:08,429 [INFO] Saved 1 entries → data/knowledge_base/domain_traditional_martial_arts.json
+2026-05-08 21:08:08,431 [INFO] Saved 16 entries → data/knowledge_base/domain_food___culture.json
+2026-05-08 21:08:08,431 [INFO] Saved 1 entries → data/knowledge_base/domain_unani.json
+2026-05-08 21:08:08,431 [INFO] Saved 7 entries → data/knowledge_base/domain_ancient_astronomy.json
+2026-05-08 21:08:08,432 [INFO] Saved 5 entries → data/knowledge_base/domain_arts___culture.json
+2026-05-08 21:08:08,437 [INFO] Saved 149 entries → data/knowledge_base/chatbot_rag_knowledge_base.json
+2026-05-08 21:08:08,440 [INFO] All outputs saved to data/knowledge_base/
