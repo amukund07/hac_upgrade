@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Hackostic
 
 Production-ready MERN restructuring of the existing learning experience.
@@ -38,3 +39,7 @@ Key setup:
 - Supabase is removed from the frontend service layer.
 - Existing pages, layout, animations, and routing are preserved.
 - The backend seeds demo data on first start so the UI has content immediately.
+=======
+# hac_upgrade
+upgrading 
+>>>>>>> 9c05c89d0178bfdc17e4ff05ac60d9faead6095d

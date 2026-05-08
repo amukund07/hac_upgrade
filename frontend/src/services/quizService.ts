@@ -1,4 +1,5 @@
 import { apiClient } from '../lib/apiClient'
+import { unwrapApiCollection, unwrapApiData } from './apiEnvelope'
 
 export interface Quiz {
   id: string
@@ -43,8 +44,8 @@ const mapError = (error: unknown): string =>
 // Fetches the quiz record attached to a module.
 export const getQuizByModule = async (moduleId: string): ServiceResult<Quiz> => {
   try {
-    const { data } = await apiClient.get<Quiz>(`/modules/${moduleId}/quiz`)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.get(`/modules/${moduleId}/quiz`)
+    return { data: unwrapApiData<Quiz>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -53,8 +54,8 @@ export const getQuizByModule = async (moduleId: string): ServiceResult<Quiz> => 
 // Fetches the questions for a quiz in display order.
 export const getQuizQuestions = async (quizId: string): ServiceResult<QuizQuestion[]> => {
   try {
-    const { data } = await apiClient.get<QuizQuestion[]>(`/quizzes/${quizId}/questions`)
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get(`/quizzes/${quizId}/questions`)
+    return { data: unwrapApiCollection<QuizQuestion>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -65,8 +66,8 @@ export const submitQuizResult = async (
   result: QuizResult,
 ): ServiceResult<QuizSubmissionResult> => {
   try {
-    const { data } = await apiClient.post<QuizSubmissionResult>(`/quizzes/${result.quiz_id}/submit`, result)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.post(`/quizzes/${result.quiz_id}/submit`, result)
+    return { data: unwrapApiData<QuizSubmissionResult>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }

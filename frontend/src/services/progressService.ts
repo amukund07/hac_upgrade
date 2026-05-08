@@ -1,4 +1,5 @@
 import { apiClient } from '../lib/apiClient'
+import { unwrapApiData } from './apiEnvelope'
 
 export interface UserModuleProgress {
   id?: string
@@ -23,8 +24,8 @@ export const getUserModuleProgress = async (
   moduleId: string,
 ): ServiceResult<UserModuleProgress> => {
   try {
-    const { data } = await apiClient.get<UserModuleProgress>(`/progress/users/${userId}/modules/${moduleId}/progress`)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.get(`/progress/users/${userId}/modules/${moduleId}/progress`)
+    return { data: unwrapApiData<UserModuleProgress>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -35,8 +36,8 @@ export const updateModuleProgress = async (
   progress: UserModuleProgress,
 ): ServiceResult<UserModuleProgress> => {
   try {
-    const { data } = await apiClient.put<UserModuleProgress>(`/progress/users/${progress.user_id}/modules/${progress.module_id}/progress`, progress)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.put(`/progress/users/${progress.user_id}/modules/${progress.module_id}/progress`, progress)
+    return { data: unwrapApiData<UserModuleProgress>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }

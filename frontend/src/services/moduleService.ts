@@ -1,4 +1,5 @@
 import { apiClient } from '../lib/apiClient'
+import { unwrapApiCollection, unwrapApiData } from './apiEnvelope'
 
 export interface LearningModule {
   id: string
@@ -41,8 +42,8 @@ const mapError = (error: unknown): string =>
 // Fetches every learning module for the home page module list.
 export const getAllModules = async (): ServiceResult<LearningModule[]> => {
   try {
-    const { data } = await apiClient.get<LearningModule[]>('/modules')
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get('/modules')
+    return { data: unwrapApiCollection<LearningModule>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -51,8 +52,8 @@ export const getAllModules = async (): ServiceResult<LearningModule[]> => {
 // Fetches a single module by id for the module details page.
 export const getModuleById = async (moduleId: string): ServiceResult<LearningModule> => {
   try {
-    const { data } = await apiClient.get<LearningModule>(`/modules/${moduleId}`)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.get(`/modules/${moduleId}`)
+    return { data: unwrapApiData<LearningModule>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -61,8 +62,8 @@ export const getModuleById = async (moduleId: string): ServiceResult<LearningMod
 // Fetches all lessons that belong to a module.
 export const getModuleLessons = async (moduleId: string): ServiceResult<Lesson[]> => {
   try {
-    const { data } = await apiClient.get<Lesson[]>(`/modules/${moduleId}/lessons`)
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get(`/modules/${moduleId}/lessons`)
+    return { data: unwrapApiCollection<Lesson>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -71,8 +72,8 @@ export const getModuleLessons = async (moduleId: string): ServiceResult<Lesson[]
 // Fetches all quizzes that belong to a module.
 export const getModuleQuizzes = async (moduleId: string): ServiceResult<Quiz[]> => {
   try {
-    const { data } = await apiClient.get<Quiz[]>(`/modules/${moduleId}/quizzes`)
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get(`/modules/${moduleId}/quizzes`)
+    return { data: unwrapApiCollection<Quiz>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }

@@ -1,4 +1,5 @@
 import { apiClient } from '../lib/apiClient'
+import { unwrapApiData } from './apiEnvelope'
 
 export interface Achievement {
   id: string
@@ -26,8 +27,8 @@ const mapError = (error: unknown): string =>
 // Fetches all available achievements for the gamification layer.
 export const getAchievements = async (): ServiceResult<Achievement[]> => {
   try {
-    const { data } = await apiClient.get<Achievement[]>('/achievements')
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get('/achievements')
+    return { data: unwrapApiData<Achievement[]>(response) ?? [], error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -43,8 +44,8 @@ export const unlockAchievement = async (
       unlocked_at: new Date().toISOString(),
     }
 
-    const { data } = await apiClient.post<UserAchievement>('/achievements/unlock', payload)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.post('/achievements/unlock', payload)
+    return { data: unwrapApiData<UserAchievement>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -53,8 +54,8 @@ export const unlockAchievement = async (
 // Fetches the achievements unlocked by a specific user.
 export const getUserAchievements = async (userId: string): ServiceResult<UserAchievement[]> => {
   try {
-    const { data } = await apiClient.get<UserAchievement[]>(`/achievements/users/${userId}`)
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get(`/achievements/users/${userId}`)
+    return { data: unwrapApiData<UserAchievement[]>(response) ?? [], error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }

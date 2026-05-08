@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ChevronLeft, Play, Lock, CheckCircle2, BadgeCheck } from 'lucide-react'
+import { ChevronLeft, Play, Lock, CheckCircle2, Files, Sparkles } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { useAuth } from '../../context/AuthContext'
-import { getModuleById, getModuleLessons, type LearningModule, type Lesson } from '../../services/moduleService'
+import { getModuleById, getModuleLessons, getModuleQuizzes, type LearningModule, type Lesson, type Quiz } from '../../services/moduleService'
 import { getUserLessonProgress } from '../../services/lessonService'
-import { getQuizByModule, type Quiz } from '../../services/quizService'
 
 export const ModuleDetailsPage = () => {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ export const ModuleDetailsPage = () => {
   const { user } = useAuth()
   const [module, setModule] = useState<LearningModule | null>(null)
   const [lessons, setLessons] = useState<Lesson[]>([])
-  const [quiz, setQuiz] = useState<Quiz | null>(null)
+  const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [lessonProgressMap, setLessonProgressMap] = useState<Record<string, boolean>>({})
 
@@ -30,11 +29,11 @@ export const ModuleDetailsPage = () => {
       setIsLoading(true)
       const moduleResult = await getModuleById(id)
       const lessonsResult = await getModuleLessons(id)
-      const quizResult = await getQuizByModule(id)
+      const quizzesResult = await getModuleQuizzes(id)
 
       setModule(moduleResult.data)
       setLessons(lessonsResult.data ?? [])
-      setQuiz(quizResult.data)
+      setQuizzes(quizzesResult.data ?? [])
       setIsLoading(false)
     }
 
@@ -90,12 +89,12 @@ export const ModuleDetailsPage = () => {
   const completedLessonsCount = lessons.filter((lesson) => lessonProgressMap[lesson.id]).length
   const progressPercent = lessons.length ? Math.round((completedLessonsCount / lessons.length) * 100) : 0
 
-  const startQuiz = () => {
-    if (!quiz) {
+  const startQuiz = (quizId: string) => {
+    if (!quizId) {
       return
     }
 
-    navigate(`/quiz/${quiz.id}`)
+    navigate(`/quiz/${quizId}`)
   }
 
   return (
@@ -203,22 +202,39 @@ export const ModuleDetailsPage = () => {
             ))}
           </div>
 
-            {quiz && (
-              <Card className="mt-10 border-forest-200 dark:border-forest-900/50 bg-forest-50/60 dark:bg-forest-900/10">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2 text-forest-700 dark:text-forest-300 font-semibold uppercase text-xs tracking-[0.2em]">
-                      <BadgeCheck className="h-4 w-4" /> Module Quiz
-                    </div>
-                    <h3 className="font-serif text-2xl font-bold text-earth-900 dark:text-earth-50">{quiz.title}</h3>
-                    <p className="text-earth-600 dark:text-earth-400">Complete the lesson and take the quiz to earn score-based XP.</p>
-                  </div>
-                  <Button size="lg" onClick={startQuiz} disabled={lessons.length === 0}>
-                    Take Quiz
-                  </Button>
+            <div className="mt-10 space-y-4">
+              <div className="flex items-center gap-2 text-forest-700 dark:text-forest-300 font-semibold uppercase text-xs tracking-[0.2em]">
+                <Files className="h-4 w-4" /> Module Quizzes
+              </div>
+
+              {quizzes.length > 0 ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  {quizzes.map((quiz) => (
+                    <Card key={quiz.id} className="border-forest-200 dark:border-forest-900/50 bg-forest-50/60 dark:bg-forest-900/10">
+                      <div className="flex h-full flex-col justify-between gap-6">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2 text-forest-700 dark:text-forest-300 text-xs font-semibold uppercase tracking-[0.2em]">
+                            <Sparkles className="h-4 w-4" /> Quiz
+                          </div>
+                          <h3 className="font-serif text-2xl font-bold text-earth-900 dark:text-earth-50">{quiz.title}</h3>
+                          <p className="text-earth-600 dark:text-earth-400 mt-2">Review the module lessons, then take this quiz to earn XP and unlock the next step in the journey.</p>
+                        </div>
+                        <div className="flex items-center justify-between gap-4">
+                          <Badge variant="xp">Passing score {quiz.passing_score ?? 70}%</Badge>
+                          <Button size="lg" onClick={() => startQuiz(quiz.id)} disabled={lessons.length === 0}>
+                            Take Quiz
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
                 </div>
-              </Card>
-            )}
+              ) : (
+                <Card className="border-dashed border-earth-200 bg-white/60 text-earth-600 dark:border-earth-800 dark:bg-earth-900/20 dark:text-earth-300">
+                  No quizzes are available for this module yet.
+                </Card>
+              )}
+            </div>
         </div>
       </div>
     </div>

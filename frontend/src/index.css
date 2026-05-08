@@ -46,9 +46,11 @@
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -58,6 +60,7 @@
   0% {
     box-shadow: 0 0 5px rgba(226, 147, 106, 0.2);
   }
+
   100% {
     box-shadow: 0 0 20px rgba(226, 147, 106, 0.6);
   }
@@ -72,7 +75,12 @@
     @apply bg-paper-dark text-earth-100;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-serif;
   }
 }

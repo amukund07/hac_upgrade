@@ -10,7 +10,7 @@ interface ProgressBarProps extends HTMLAttributes<HTMLDivElement> {
 
 export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
   ({ className, progress, variant = 'default', showLabel = false, ...props }, ref) => {
-    
+
     const variants = {
       default: 'bg-forest-500',
       success: 'bg-earth-500',

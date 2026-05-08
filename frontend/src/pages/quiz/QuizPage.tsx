@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import { useNavigate, useParams } from 'react-router-dom'
-import { X, CheckCircle2, XCircle, Award } from 'lucide-react'
-import { Button } from '../../components/ui/Button'
-import { Card } from '../../components/ui/Card'
-import { ProgressBar } from '../../components/ui/ProgressBar'
+import { X } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { getQuizQuestions, submitQuizResult, type Quiz, type QuizQuestion } from '../../services/quizService'
 import { apiClient } from '../../lib/apiClient'
+import { QuizProgress } from '../../components/quiz/QuizProgress'
+import { QuizCard } from '../../components/quiz/QuizCard'
+import { QuizActionBar } from '../../components/quiz/QuizActionBar'
+import { CelebrationModal } from '../../components/quiz/CelebrationModal'
+import { FloatingParticles } from '../../components/quiz/FloatingParticles'
+import { AICompanion } from '../../components/quiz/AICompanion'
+import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
 
 type QuizPayload = Quiz & {
   earned_xp?: number
@@ -17,10 +22,10 @@ export const QuizPage = () => {
   const navigate = useNavigate();
   const { id } = useParams()
   const { user, refreshUser } = useAuth()
-  const [currentQ, setCurrentQ] = useState(0);
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isAnswered, setIsAnswered] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
+  const [isRevealed, setIsRevealed] = useState(false)
+  const [showResults, setShowResults] = useState(false)
   const [quiz, setQuiz] = useState<QuizPayload | null>(null)
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -47,39 +52,49 @@ export const QuizPage = () => {
     void loadQuiz()
   }, [id])
 
-  const question = questions[currentQ];
-  const progress = questions.length ? (currentQ / questions.length) * 100 : 0;
+  const question = questions[currentQuestion]
+  const currentScore = useMemo(() => {
+    if (!questions.length) {
+      return 0
+    }
+
+    return questions.reduce((count, item, idx) => {
+      const selectedIndex = answers[idx]
+      const selectedText = typeof selectedIndex === 'number' ? item.options?.[selectedIndex] : undefined
+      return count + (selectedText === item.correct_answer ? 1 : 0)
+    }, 0)
+  }, [answers, questions])
 
   const handleOptionClick = (idx: number) => {
-    if (isAnswered) return;
-    setSelectedOption(idx);
-  };
+    if (isRevealed) return
+    setSelectedAnswer(idx)
+  }
 
   const handleNext = () => {
-    if (!isAnswered) {
-      if (selectedOption === null) {
+    if (!isRevealed) {
+      if (selectedAnswer === null) {
         return
       }
 
-      setIsAnswered(true);
-      setAnswers((currentAnswers) => ({ ...currentAnswers, [currentQ]: selectedOption }))
+      setIsRevealed(true)
+      setAnswers((currentAnswers) => ({ ...currentAnswers, [currentQuestion]: selectedAnswer }))
     } else {
-      if (currentQ < questions.length - 1) {
-        setCurrentQ(c => c + 1);
-        setSelectedOption(null);
-        setIsAnswered(false);
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion((value) => value + 1)
+        setSelectedAnswer(null)
+        setIsRevealed(false)
       } else {
         void handleSubmitQuiz()
       }
     }
-  };
+  }
 
   const handleSubmitQuiz = async () => {
     if (!quiz || !user || !questions.length) {
       return
     }
 
-    const finalAnswers = { ...answers, [currentQ]: selectedOption ?? 0 }
+    const finalAnswers = { ...answers, [currentQuestion]: selectedAnswer ?? 0 }
     const finalScore = questions.reduce((count, item, idx) => {
       const selectedIndex = finalAnswers[idx]
       const selectedText = typeof selectedIndex === 'number' ? item.options?.[selectedIndex] : undefined
@@ -104,6 +119,17 @@ export const QuizPage = () => {
     setShowResults(true)
   }
 
+  const handlePrevious = () => {
+    if (currentQuestion === 0 || isLoading) {
+      return
+    }
+
+    setCurrentQuestion((value) => Math.max(0, value - 1))
+    const previousAnswer = answers[currentQuestion - 1] ?? null
+    setSelectedAnswer(previousAnswer)
+    setIsRevealed(Boolean(typeof previousAnswer === 'number'))
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-earth-500 dark:text-earth-300">
@@ -115,15 +141,14 @@ export const QuizPage = () => {
   if (showResults && quiz) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center max-w-md w-full"
-        >
+        <CelebrationModal
+          isOpen={showResults}
+          isCorrect={scorePercent >= (quiz.passing_score ?? 70)}
+          xpGained={earnedXp}
+          onContinue={() => navigate(quiz.module_id ? `/modules/${quiz.module_id}` : '/modules')}
+        />
+        <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center max-w-md w-full">
           <Card className="p-8">
-            <div className="mx-auto w-24 h-24 bg-terracotta-100 dark:bg-terracotta-900/50 rounded-full flex items-center justify-center mb-6">
-              <Award className="h-12 w-12 text-terracotta-500" />
-            </div>
             <h2 className="font-serif text-3xl font-bold text-earth-900 dark:text-earth-50 mb-2">Quiz Complete!</h2>
             <p className="text-earth-600 dark:text-earth-400 mb-6">Your score has been saved and XP was added to your profile.</p>
             <div className="flex justify-center gap-4 mb-8">
@@ -143,7 +168,7 @@ export const QuizPage = () => {
           </Card>
         </motion.div>
       </div>
-    );
+    )
   }
 
   if (!question) {
@@ -155,85 +180,56 @@ export const QuizPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <div className="p-4 flex items-center gap-4 max-w-3xl mx-auto w-full">
-        <button onClick={() => navigate(-1)} className="p-2 text-earth-500 hover:bg-earth-100 rounded-full dark:hover:bg-earth-800">
-          <X className="h-6 w-6" />
-        </button>
-        <ProgressBar progress={progress} className="flex-1" />
-      </div>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-earth-950 via-earth-900 to-earth-950 text-cream">
+      <FloatingParticles />
+      <div className="relative z-10 min-h-screen">
+        <QuizProgress currentQuestion={currentQuestion + 1} totalQuestions={questions.length} />
 
-      {/* Question */}
-      <div className="flex-1 max-w-2xl mx-auto w-full p-4 flex flex-col justify-center">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentQ}
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -50, opacity: 0 }}
-            className="space-y-8"
-          >
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-earth-900 dark:text-earth-50 leading-snug">
-              {question.question}
-            </h2>
-
-            <div className="space-y-3">
-              {(question.options ?? []).map((opt, idx) => {
-                const isSelected = selectedOption === idx;
-                const isCorrect = opt === question.correct_answer;
-                
-                let btnStyle = "border-earth-200 dark:border-earth-700 bg-white dark:bg-earth-900/50 hover:bg-earth-50 dark:hover:bg-earth-800 text-earth-800 dark:text-earth-200";
-                
-                if (isAnswered) {
-                  if (isCorrect) {
-                    btnStyle = "border-forest-500 bg-forest-50 dark:bg-forest-900/20 text-forest-700 dark:text-forest-300";
-                  } else if (isSelected && !isCorrect) {
-                    btnStyle = "border-terracotta-500 bg-terracotta-50 dark:bg-terracotta-900/20 text-terracotta-700 dark:text-terracotta-300";
-                  } else {
-                    btnStyle = "opacity-50 border-earth-200 dark:border-earth-700 bg-transparent";
-                  }
-                } else if (isSelected) {
-                  btnStyle = "border-earth-500 bg-earth-50 dark:bg-earth-800 text-earth-900 dark:text-earth-100 ring-2 ring-earth-500/20";
-                }
-
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleOptionClick(idx)}
-                    disabled={isAnswered}
-                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 font-medium text-lg flex justify-between items-center ${btnStyle}`}
-                  >
-                    <span>{opt}</span>
-                    {isAnswered && isCorrect && <CheckCircle2 className="h-6 w-6 text-forest-500" />}
-                    {isAnswered && isSelected && !isCorrect && <XCircle className="h-6 w-6 text-terracotta-500" />}
-                  </button>
-                );
-              })}
+        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 pb-36 pt-36 md:px-6">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <button onClick={() => navigate(-1)} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-terracotta-400/20 bg-earth-900/60 text-earth-200 hover:border-terracotta-400/50 hover:text-white">
+              <X className="h-5 w-5" />
+            </button>
+            <div className="text-right">
+              <p className="text-xs uppercase tracking-[0.28em] text-earth-400">Score</p>
+              <p className="font-serif text-2xl text-cream">{currentScore} / {questions.length}</p>
             </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* Footer */}
-      <div className={`border-t p-4 transition-colors duration-300 ${isAnswered ? ((question.options?.[selectedOption ?? -1] === question.correct_answer) ? 'bg-forest-50 dark:bg-forest-900/20 border-forest-200 dark:border-forest-800' : 'bg-terracotta-50 dark:bg-terracotta-900/20 border-terracotta-200 dark:border-terracotta-800') : 'bg-white dark:bg-earth-900 border-earth-200 dark:border-earth-800'}`}>
-        <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <div>
-            {isAnswered && (
-                <h3 className={`font-bold text-xl ${(question.options?.[selectedOption ?? -1] === question.correct_answer) ? 'text-forest-600 dark:text-forest-400' : 'text-terracotta-600 dark:text-terracotta-400'}`}>
-                  {(question.options?.[selectedOption ?? -1] === question.correct_answer) ? 'Excellent!' : 'Not quite.'}
-              </h3>
-            )}
           </div>
-          <Button 
-            size="lg" 
-            onClick={handleNext}
-              disabled={!isAnswered && selectedOption === null}
-              className={`min-w-[150px] ${isAnswered ? ((question.options?.[selectedOption ?? -1] === question.correct_answer) ? 'bg-forest-500 hover:bg-forest-600' : 'bg-terracotta-500 hover:bg-terracotta-600') : ''}`}
-          >
-            {isAnswered ? 'Continue' : 'Check'}
-          </Button>
+
+          <div className="flex-1">
+            <QuizCard
+              quizTitle={quiz?.title ?? 'Module quiz'}
+              question={{
+                id: question.id,
+                question: question.question,
+                options: question.options ?? [],
+                correct_answer: question.correct_answer,
+              }}
+              selectedAnswer={selectedAnswer}
+              isRevealed={isRevealed}
+              onAnswerSelect={handleOptionClick}
+            />
+          </div>
+
+          <div className="pointer-events-none fixed right-6 top-1/2 hidden -translate-y-1/2 lg:block">
+            <AICompanion
+              emotion={isRevealed ? 'encouraging' : 'thinking'}
+              message={isRevealed ? 'Good. Review the feedback, then continue.' : 'Choose the answer that feels most aligned with the lesson.'}
+            />
+          </div>
         </div>
+
+        <QuizActionBar
+          currentQuestion={currentQuestion + 1}
+          totalQuestions={questions.length}
+          selectedAnswer={selectedAnswer}
+          isRevealed={isRevealed}
+          xpReward={25}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          onSubmit={handleSubmitQuiz}
+          motivationalText={isRevealed ? 'That answer is locked in. Move to the next step.' : 'Trust the tradition and make your choice.'}
+        />
       </div>
     </div>
   );

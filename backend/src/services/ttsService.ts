@@ -5,9 +5,8 @@ export const synthesizeText = async (text: string) => {
     throw new Error('TTS provider not configured (GEMINI_API_KEY missing)')
   }
 
-  // Using Google's Text-to-Speech REST endpoint as an example. The exact
-  // Gemini/Google generative TTS endpoint may differ; update as needed.
-  const url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
+  const url = new URL('https://texttospeech.googleapis.com/v1/text:synthesize')
+  url.searchParams.set('key', env.geminiApiKey)
 
   const body = {
     input: { text },
@@ -15,22 +14,20 @@ export const synthesizeText = async (text: string) => {
     audioConfig: { audioEncoding: 'MP3' },
   }
 
-  const resp = await fetch(url, {
+  const response = await fetch(url.toString(), {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${env.geminiApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   })
 
-  if (!resp.ok) {
-    const txt = await resp.text()
-    throw new Error(`TTS provider error: ${resp.status} ${txt}`)
+  if (!response.ok) {
+    const responseText = await response.text()
+    throw new Error(`TTS provider error: ${response.status} ${responseText}`)
   }
 
-  const data = await resp.json()
+  const data = await response.json()
 
-  // `audioContent` is base64-encoded audio data
   return data.audioContent as string
 }

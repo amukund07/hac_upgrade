@@ -10,7 +10,7 @@ type ButtonProps = HTMLMotionProps<"button"> & {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
-    
+
     const variants = {
       primary: 'bg-earth-500 text-white hover:bg-earth-600 shadow-lg shadow-earth-500/30',
       secondary: 'bg-forest-500 text-white hover:bg-forest-600 shadow-lg shadow-forest-500/30',

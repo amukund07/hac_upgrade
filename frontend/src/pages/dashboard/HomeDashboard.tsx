@@ -17,7 +17,7 @@ export const HomeDashboard = () => {
   useEffect(() => {
     const loadDashboard = async () => {
       const modulesResult = await getAllModules()
-      const sourceModules = modulesResult.data ?? []
+      const sourceModules = Array.isArray(modulesResult.data) ? modulesResult.data : []
 
       if (!user) {
         setModules(sourceModules.map((module) => ({ ...module, progress: 0 })))

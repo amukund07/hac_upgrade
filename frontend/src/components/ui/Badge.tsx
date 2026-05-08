@@ -7,7 +7,7 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, variant = 'category', children, ...props }, ref) => {
-    
+
     const variants = {
       xp: 'bg-terracotta-500/10 text-terracotta-600 border-terracotta-500/20 dark:bg-terracotta-500/20 dark:text-terracotta-400',
       level: 'bg-forest-500/10 text-forest-600 border-forest-500/20 dark:bg-forest-500/20 dark:text-forest-400',

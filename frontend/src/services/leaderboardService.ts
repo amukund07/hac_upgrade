@@ -1,4 +1,5 @@
 import { apiClient } from '../lib/apiClient'
+import { unwrapApiData } from './apiEnvelope'
 
 export interface LeaderboardEntry {
   id: string
@@ -17,8 +18,8 @@ const mapError = (error: unknown): string =>
 // Fetches the leaderboard ordered by the highest XP totals.
 export const getLeaderboard = async (): ServiceResult<LeaderboardEntry[]> => {
   try {
-    const { data } = await apiClient.get<LeaderboardEntry[]>('/leaderboard')
-    return { data: data ?? [], error: null }
+    const response = await apiClient.get('/leaderboard')
+    return { data: unwrapApiData<LeaderboardEntry[]>(response) ?? [], error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }

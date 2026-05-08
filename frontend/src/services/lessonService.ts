@@ -1,4 +1,5 @@
 import { apiClient } from '../lib/apiClient'
+import { unwrapApiData } from './apiEnvelope'
 
 export interface Lesson {
   id: string
@@ -29,8 +30,8 @@ const mapError = (error: unknown): string =>
 // Fetches a lesson and its content by lesson id.
 export const getLessonById = async (lessonId: string): ServiceResult<Lesson> => {
   try {
-    const { data } = await apiClient.get<Lesson>(`/lessons/${lessonId}`)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.get(`/lessons/${lessonId}`)
+    return { data: unwrapApiData<Lesson>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -50,8 +51,8 @@ export const completeLesson = async (
       progress_percentage: 100,
     }
 
-    const { data } = await apiClient.post<UserLessonProgress>(`/lessons/${lessonId}/complete`, payload)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.post(`/lessons/${lessonId}/complete`, payload)
+    return { data: unwrapApiData<UserLessonProgress>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
@@ -63,8 +64,8 @@ export const getUserLessonProgress = async (
   lessonId: string,
 ): ServiceResult<UserLessonProgress> => {
   try {
-    const { data } = await apiClient.get<UserLessonProgress>(`/progress/users/${userId}/lessons/${lessonId}/progress`)
-    return { data: data ?? null, error: null }
+    const response = await apiClient.get(`/progress/users/${userId}/lessons/${lessonId}/progress`)
+    return { data: unwrapApiData<UserLessonProgress>(response), error: null }
   } catch (error) {
     return { data: null, error: mapError(error) }
   }
