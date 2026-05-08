@@ -1,0 +1,145 @@
+version: '3.1'
+nlu:
+- intent: ask_ayurveda
+  examples: |
+    - what is brahmi
+    - tell me about brahmi — brain tonic of the gods
+    - what is active
+    - tell me about giloy (guduchi) — the root of immortality
+    - tell me about shatavari — the herb of 100 roots
+    - what is leaves
+    - what is every
+    - what is water
+    - tell me about ayurvedic seasonal routine — ritucharya
+    - what is turmeric
+    - what is reduces
+    - what is coconut
+    - what is shatavari
+    - what is nasal
+    - tell me about dinacharya — ayurvedic daily routine
+- intent: ask_home_remedies
+  examples: |
+    - tell me about kadha — immunity decoction
+    - what is wound
+    - tell me about mustard oil massage — cold and chest rub
+    - tell me about ginger honey for sore throat and nausea
+    - what is nausea
+    - what is water
+    - what is honey
+    - what is paste
+    - what is garlic
+    - what is ayush
+    - what is turmeric
+    - what is mustard
+    - what is covid
+    - tell me about haldi milk for wounds — kitchen first aid
+    - what is chest
+- intent: ask_yoga
+  examples: |
+    - what is vibration
+    - what is nostril
+    - what is water
+    - what is counts
+    - what is nasal
+    - what is state
+    - tell me about surya namaskar — complete body workout
+    - what is sleep
+    - what is increases
+    - what is nidra
+    - what is rounds
+    - tell me about bhramari pranayama — humming bee breath
+    - what is inhale
+    - what is humming
+    - what is exhale
+- intent: ask_food___culture
+  examples: |
+    - what is tamasic
+    - tell me about haldi ceremony (ubtan) — pre-wedding skin ritual
+    - tell me about fermented foods of india — probiotic heritage
+    - tell me about sattvic diet — yogic eating system
+    - what is fermentation
+    - what is water
+    - what is paste
+    - what is foods
+    - what is turmeric
+    - what is sattvic
+    - what is diversity
+    - what is fermented
+- intent: ask_oral_history
+  examples: |
+    - what is hindu
+    - what is dhanvantari
+    - what is composed
+    - tell me about the panchatantra — original management philosophy
+    - tell me about the legend of dhanvantari — god of medicine
+    - what is panchatantra
+    - what is translated
+    - what is medicine
+- intent: ask_arts___culture
+  examples: |
+    - what is systems
+    - tell me about bharatanatyam — the dance of truth
+    - tell me about kolam — tamil living geometry
+    - what is dance
+    - what is patterns
+    - what is kolam
+    - what is bharata
+    - what is bharatanatyam
+- intent: ask_sustainable_farming
+  examples: |
+    - tell me about jeevamrit — living elixir for soil
+    - what is microbial
+    - tell me about bijamrit — seed treatment for disease resistance
+    - what is reduces
+    - what is increases
+    - what is bijamrit
+    - what is seeds
+    - what is farming
+- intent: ask_vedic_mathematics
+  examples: |
+    - what is sutras
+    - what is placeholder
+    - what is numbers
+    - what is number
+    - tell me about aryabhata and the invention of zero
+    - what is concept
+    - what is multiplication
+    - tell me about vedic maths sutras — speed computation
+- intent: ask_ancient_astronomy
+  examples: |
+    - what is built
+    - what is jantar
+    - tell me about jantar mantar — ancient astronomical observatory
+    - what is mantar
+- intent: ask_siddha
+  examples: |
+    - what is tamil
+    - tell me about kabasura kudineer — siddha respiratory formula
+    - what is prophylactic
+    - what is oldest
+    - what is siddha
+    - what is kabasura
+    - tell me about siddha medicine — tamil heritage of healing
+    - what is clinical
+- intent: ask_tribal_knowledge
+  examples: |
+    - what is plants
+    - tell me about adivasi forest medicine — chhattisgarh
+    - what is communities
+    - what is adivasi
+- intent: ask_martial_arts
+  examples: |
+    - tell me about kalari marma therapy — points of life
+    - what is marma
+    - what is kalaripayattu
+    - what is kerala
+    - what is points
+    - what is widely
+    - what is acupuncture
+    - tell me about kalaripayattu — mother of martial arts
+- intent: ask_unani
+  examples: |
+    - what is greek
+    - tell me about unani — greco-persian medicine in india
+    - what is unani
+    - what is medicine
