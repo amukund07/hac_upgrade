@@ -1,0 +1,1 @@
+export const calculateLevel = (xpPoints: number) => Math.floor(xpPoints / 500) + 1
