@@ -54,6 +54,7 @@ export const SignupPage = () => {
                 type="text"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
+                required
                 className="w-full rounded-xl border border-earth-200 bg-earth-50/50 px-4 py-3 text-earth-900 outline-none transition-all focus:border-earth-500 focus:ring-2 focus:ring-earth-500/20 dark:border-earth-700 dark:bg-earth-800/50 dark:text-earth-100"
                 placeholder="villager123"
               />
@@ -64,6 +65,7 @@ export const SignupPage = () => {
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
+                required
                 className="w-full rounded-xl border border-earth-200 bg-earth-50/50 px-4 py-3 text-earth-900 outline-none transition-all focus:border-earth-500 focus:ring-2 focus:ring-earth-500/20 dark:border-earth-700 dark:bg-earth-800/50 dark:text-earth-100"
                 placeholder="elder@village.com"
               />
@@ -74,6 +76,7 @@ export const SignupPage = () => {
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                required
                 className="w-full rounded-xl border border-earth-200 bg-earth-50/50 px-4 py-3 text-earth-900 outline-none transition-all focus:border-earth-500 focus:ring-2 focus:ring-earth-500/20 dark:border-earth-700 dark:bg-earth-800/50 dark:text-earth-100"
                 placeholder="••••••••"
               />

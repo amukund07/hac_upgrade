@@ -7,7 +7,8 @@ export const synthesize = asyncHandler(async (req: Request, res: Response) => {
   const { text } = req.body
 
   if (!text || typeof text !== 'string') {
-    return sendResponse({ res, statusCode: 400, message: 'Missing text in request body' })
+    void sendResponse({ res, statusCode: 400, message: 'Missing text in request body' })
+    return
   }
 
   const audioBase64 = await synthesizeText(text)
