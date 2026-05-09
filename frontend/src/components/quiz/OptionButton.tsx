@@ -43,13 +43,13 @@ export const OptionButton = ({ label, state, disabled, onClick }: OptionButtonPr
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'group flex w-full items-center justify-between gap-4 rounded-2xl border px-6 py-6 text-left transition-all duration-200 font-medium text-lg',
+        'group flex w-full items-center justify-between gap-3 rounded-xl border px-4 py-4 md:px-6 md:py-6 md:rounded-2xl transition-all duration-200 font-medium text-base md:text-lg',
         getStyles(),
         disabled && state === 'idle' && 'opacity-50',
         !disabled && 'cursor-pointer'
       )}
     >
-      <span className="text-lg font-medium">{label}</span>
+      <span className="text-base md:text-lg font-medium">{label}</span>
       <div className="flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
         {getIcon()}
       </div>

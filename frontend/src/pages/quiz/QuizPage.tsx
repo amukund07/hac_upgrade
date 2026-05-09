@@ -191,7 +191,7 @@ export const QuizPage = () => {
       <div className="relative z-10 min-h-screen">
         <QuizProgress currentQuestion={currentQuestion + 1} totalQuestions={questions.length} />
 
-        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 pb-36 pt-36 md:px-6">
+        <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 pb-48 pt-28 md:px-6 md:pb-36 md:pt-36">
           <div className="mb-8 flex items-center justify-between gap-4">
             <button onClick={() => navigate(-1)} className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-terracotta-500/50 bg-earth-800/80 text-white hover:border-terracotta-500 hover:text-white hover:bg-earth-700 transition-all">
               <X className="h-6 w-6" />

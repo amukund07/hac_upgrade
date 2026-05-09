@@ -51,16 +51,17 @@ export const QuizActionBar = ({
       animate={{ y: 0 }}
       className="fixed bottom-0 left-0 right-0 z-40 border-t-2 border-terracotta-500/30 bg-earth-950/98 backdrop-blur-xl"
     >
-      <div className="mx-auto max-w-5xl px-4 py-5 md:px-6">
-        <div className="flex items-center justify-between gap-4 rounded-2xl border-2 border-terracotta-500/40 bg-gradient-to-r from-earth-900 to-earth-800 px-6 py-5 backdrop-blur-xl shadow-lg shadow-terracotta-500/10">
+      <div className="mx-auto max-w-5xl px-2 py-3 md:px-6 md:py-5">
+        <div className="flex items-center justify-between gap-2 rounded-xl border-2 border-terracotta-500/40 bg-gradient-to-r from-earth-900 to-earth-800 px-3 py-3 md:px-6 md:py-5 md:rounded-2xl backdrop-blur-xl shadow-lg shadow-terracotta-500/10">
           <Button 
             variant="outline" 
             onClick={onPrevious} 
             disabled={isFirstQuestion || isSubmitting} 
-            className="rounded-full border-2 border-white/40 text-white hover:bg-white/15 hover:text-white font-semibold"
+            className="h-10 px-3 md:h-11 md:px-6 rounded-full border-2 border-white/40 text-white hover:bg-white/15 hover:text-white font-semibold text-sm md:text-base"
           >
-            <ChevronLeft className="mr-2 h-5 w-5" />
-            Previous
+            <ChevronLeft className="mr-1 md:mr-2 h-4 w-4 md:h-5 md:w-5" />
+            <span className="hidden sm:inline">Previous</span>
+            <span className="sm:hidden">Back</span>
           </Button>
 
           <div className="flex flex-1 flex-col items-center gap-1 text-center">
@@ -84,11 +85,12 @@ export const QuizActionBar = ({
           <Button
             onClick={handlePrimaryAction}
             disabled={isSubmitting || (!isRevealed && selectedAnswer === null)}
-            className="rounded-full bg-gradient-to-r from-terracotta-500 via-burnt-orange-500 to-burnt-orange-600 text-white shadow-lg shadow-terracotta-500/30 hover:shadow-terracotta-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-base"
+            className="h-10 px-3 md:h-11 md:px-6 rounded-full bg-gradient-to-r from-terracotta-500 via-burnt-orange-500 to-burnt-orange-600 text-white shadow-lg shadow-terracotta-500/30 hover:shadow-terracotta-500/50 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm md:text-base"
           >
-            {!isRevealed ? <Sparkles className="mr-2 h-5 w-5" /> : <CheckCircle className="mr-2 h-5 w-5" />}
-            {primaryLabel}
-            <ChevronRight className="ml-2 h-5 w-5" />
+            {!isRevealed ? <Sparkles className="mr-1 md:mr-2 h-4 w-4 md:h-5 md:w-5" /> : <CheckCircle className="mr-1 md:mr-2 h-4 w-4 md:h-5 md:w-5" />}
+            <span className="hidden sm:inline">{primaryLabel}</span>
+            <span className="sm:hidden">{!isRevealed ? 'Reveal' : isLastQuestion ? 'Finish' : 'Next'}</span>
+            <ChevronRight className="ml-1 md:ml-2 h-4 w-4 md:h-5 md:w-5" />
           </Button>
         </div>
       </div>

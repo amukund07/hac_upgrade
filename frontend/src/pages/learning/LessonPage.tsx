@@ -9,17 +9,20 @@ import { useAuth } from '../../context/AuthContext'
 import { completeLesson, getLessonById, type Lesson } from '../../services/lessonService'
 import { getQuizByModule, type Quiz } from '../../services/quizService'
 import { useLessonNarration } from '../../hooks/useLessonNarration'
+import { useWebSpeechTTS } from '../../hooks/useWebSpeechTTS'
 
 export const LessonPage = () => {
   const navigate = useNavigate();
   const { id } = useParams()
   const { user, refreshUser } = useAuth()
   const { playNarration, stopNarration, isSpeaking, isGenerating, error } = useLessonNarration()
+  const { speak: speakWebSpeech, stop: stopWebSpeech, isSpeaking: isWebSpeechSpeaking } = useWebSpeechTTS()
   const [lesson, setLesson] = useState<Lesson | null>(null)
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showReward, setShowReward] = useState(false)
   const [isCompleting, setIsCompleting] = useState(false)
+  const [usedWebSpeech, setUsedWebSpeech] = useState(false)
   const didNarrate = useRef(false)
 
   useEffect(() => {
@@ -50,8 +53,10 @@ export const LessonPage = () => {
     }
 
     didNarrate.current = true
-    void playNarration(lesson.module_id, lesson.title, lesson.content)
-  }, [lesson, playNarration])
+    // Use Web Speech API by default (doesn't require backend API or quotas)
+    speakWebSpeech(lesson.content)
+    setUsedWebSpeech(true)
+  }, [lesson, speakWebSpeech])
 
   const handleComplete = async () => {
     if (!lesson || !quiz || !user) {
@@ -76,12 +81,21 @@ export const LessonPage = () => {
       return
     }
 
-    if (isSpeaking) {
-      stopNarration()
-      return
+    if (usedWebSpeech) {
+      // Using Web Speech API
+      if (isWebSpeechSpeaking) {
+        stopWebSpeech()
+      } else {
+        speakWebSpeech(lesson.content)
+      }
+    } else {
+      // Using backend TTS API
+      if (isSpeaking) {
+        stopNarration()
+        return
+      }
+      await playNarration(lesson.module_id, lesson.title, lesson.content)
     }
-
-    await playNarration(lesson.module_id, lesson.title, lesson.content)
   }
 
   if (isLoading) {
@@ -131,9 +145,37 @@ export const LessonPage = () => {
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-forest-600 dark:text-forest-400 mb-2">Live lesson</p>
               <h1 className="font-serif text-4xl font-bold text-earth-900 dark:text-earth-50">{lesson.title}</h1>
             </div>
-            <Button variant="outline" size="sm" onClick={handleNarrationToggle} isLoading={isGenerating}>
-              {isSpeaking ? <VolumeX className="mr-2 h-4 w-4" /> : <Volume2 className="mr-2 h-4 w-4" />}
-              {isSpeaking ? 'Stop voice' : 'Play voice'}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleNarrationToggle} 
+              isLoading={isGenerating}
+            >
+              {usedWebSpeech ? (
+                isWebSpeechSpeaking ? (
+                  <>
+                    <VolumeX className="mr-2 h-4 w-4" />
+                    Stop voice (Web)
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="mr-2 h-4 w-4" />
+                    Play voice (Web)
+                  </>
+                )
+              ) : (
+                isSpeaking ? (
+                  <>
+                    <VolumeX className="mr-2 h-4 w-4" />
+                    Stop voice (AI)
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="mr-2 h-4 w-4" />
+                    Play voice (AI)
+                  </>
+                )
+              )}
             </Button>
           </div>
           
@@ -156,7 +198,7 @@ export const LessonPage = () => {
             <p>
               {quiz ? `After this lesson, you will take the ${quiz.title} quiz to earn XP.` : 'The related quiz is being loaded from the database.'}
             </p>
-            {error && <p className="text-terracotta-600 dark:text-terracotta-400">{error}</p>}
+            {error && <p className="text-terracotta-600 dark:text-terracotta-400">Backend TTS Error: {error}</p>}
           </div>
         </motion.div>
       </div>
