@@ -1,12 +1,43 @@
 import { GoogleGenAI } from '@google/genai'
 import { env } from '../config/env'
 
+type GeminiRequestType = 'chat' | 'narration' | 'rag'
+
+const fallbackResponseByType: Record<GeminiRequestType, string> = {
+  chat: 'I can still help with traditional wisdom basics right now. Please try again in a moment for a richer AI response.',
+  rag: 'I could not generate a full context-based answer right now. Please retry, or ask a narrower question so I can help step-by-step.',
+  narration: 'Here is a simple narration: This lesson teaches traditional knowledge through lived experience, community practice, and respect for nature. Review the key ideas slowly and relate them to daily life.',
+}
+
+const getTextFromResult = (result: unknown): string | undefined => {
+  if (!result || typeof result !== 'object') {
+    return undefined
+  }
+
+  const maybeResult = result as {
+    text?: string
+    candidates?: Array<{
+      content?: {
+        parts?: Array<{ text?: string }>
+      }
+    }>
+  }
+
+  const directText = maybeResult.text?.trim()
+  if (directText) {
+    return directText
+  }
+
+  const candidateText = maybeResult.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+  return candidateText || undefined
+}
+
 export const generateGeminiResponse = async (
-  type: 'chat' | 'narration' | 'rag',
+  type: GeminiRequestType,
   payload: { question?: string; contextSnippets?: string[]; title?: string; content?: string }
 ) => {
   if (!env.geminiApiKey) {
-    throw new Error('Gemini API key not configured')
+    return fallbackResponseByType[type]
   }
 
   const ai = new GoogleGenAI({ apiKey: env.geminiApiKey })
@@ -53,12 +84,15 @@ export const generateGeminiResponse = async (
     `;
   }
 
-  const result = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] }
-  })
+  try {
+    const result = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: [{ role: 'user', parts: [{ text: `${systemInstruction}\n\n${prompt}` }] }],
+    })
 
-  // @ts-ignore
-  return result.candidates?.[0]?.content?.parts?.[0]?.text ?? "The ancestors are silent today."
+    return getTextFromResult(result) ?? fallbackResponseByType[type]
+  } catch (error) {
+    console.error('Gemini generation failed:', error)
+    return fallbackResponseByType[type]
+  }
 }

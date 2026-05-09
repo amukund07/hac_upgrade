@@ -50,7 +50,7 @@ export const LessonPage = () => {
     }
 
     didNarrate.current = true
-    void playNarration(lesson.title, lesson.content)
+    void playNarration(lesson.module_id, lesson.title, lesson.content)
   }, [lesson, playNarration])
 
   const handleComplete = async () => {
@@ -81,7 +81,7 @@ export const LessonPage = () => {
       return
     }
 
-    await playNarration(lesson.title, lesson.content)
+    await playNarration(lesson.module_id, lesson.title, lesson.content)
   }
 
   if (isLoading) {

@@ -104,7 +104,7 @@ export const ModuleDetailsPage = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-earth-900/90 to-transparent z-10" />
 
         <div className="absolute top-4 left-4 z-20">
-          <button 
+          <button
             onClick={() => navigate('/modules')}
             className="flex items-center justify-center h-10 w-10 rounded-full bg-white/20 text-white backdrop-blur-md hover:bg-white/30 transition-colors"
           >
@@ -154,11 +154,11 @@ export const ModuleDetailsPage = () => {
           {isLoading && (
             <Card className="text-earth-600 dark:text-earth-400">Loading lessons from the database...</Card>
           )}
-          
+
           <div className="space-y-6">
-              {lessonStatuses.map(({ lesson, status }, idx) => (
+            {lessonStatuses.map(({ lesson, status }, idx) => (
               <motion.div
-                  key={lesson.id}
+                key={lesson.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.1 }}
@@ -166,34 +166,34 @@ export const ModuleDetailsPage = () => {
               >
                 {/* Connecting Line */}
                 {idx !== lessons.length - 1 && (
-                    <div className={`absolute left-4 top-10 bottom-[-24px] w-0.5 ${status === 'completed' ? 'bg-forest-500' : 'bg-earth-200 dark:bg-earth-800'}`} />
+                  <div className={`absolute left-4 top-10 bottom-[-24px] w-0.5 ${status === 'completed' ? 'bg-forest-500' : 'bg-earth-200 dark:bg-earth-800'}`} />
                 )}
-                
+
                 {/* Node Icon */}
                 <div className={`absolute left-0 top-1 h-8 w-8 rounded-full border-2 flex items-center justify-center bg-white dark:bg-earth-950 z-10
-                    ${status === 'completed' ? 'border-forest-500 text-forest-500' : 
-                      status === 'unlocked' ? 'border-terracotta-500 text-terracotta-500 shadow-[0_0_10px_rgba(208,82,56,0.3)]' : 
-                    'border-earth-300 text-earth-300 dark:border-earth-700 dark:text-earth-700'}`}
+                    ${status === 'completed' ? 'border-forest-500 text-forest-500' :
+                    status === 'unlocked' ? 'border-terracotta-500 text-terracotta-500 shadow-[0_0_10px_rgba(208,82,56,0.3)]' :
+                      'border-earth-300 text-earth-300 dark:border-earth-700 dark:text-earth-700'}`}
                 >
-                    {status === 'completed' && <CheckCircle2 className="h-5 w-5" />}
-                    {status === 'unlocked' && <Play className="h-4 w-4 ml-0.5" />}
-                    {status === 'locked' && <Lock className="h-4 w-4" />}
+                  {status === 'completed' && <CheckCircle2 className="h-5 w-5" />}
+                  {status === 'unlocked' && <Play className="h-4 w-4 ml-0.5" />}
+                  {status === 'locked' && <Lock className="h-4 w-4" />}
                 </div>
 
-                <Card 
-                    hoverable={status !== 'locked'} 
-                    className={`p-5 transition-all ${status === 'locked' ? 'opacity-60 grayscale' : ''} ${status === 'unlocked' ? 'border-terracotta-200 dark:border-terracotta-900/50' : ''}`}
-                    onClick={() => status !== 'locked' && navigate(`/lesson/${lesson.id}`)}
+                <Card
+                  hoverable={status !== 'locked'}
+                  className={`p-5 transition-all ${status === 'locked' ? 'opacity-60 grayscale' : ''} ${status === 'unlocked' ? 'border-terracotta-200 dark:border-terracotta-900/50' : ''}`}
+                  onClick={() => status !== 'locked' && navigate(`/lesson/${lesson.id}`)}
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-semibold text-earth-500 uppercase tracking-wide mb-1">Lesson {idx + 1}</p>
                       <h3 className="font-serif text-xl font-bold text-earth-900 dark:text-earth-100">{lesson.title}</h3>
                     </div>
-                      {status === 'unlocked' && (
+                    {status === 'unlocked' && (
                       <Button size="sm">Start</Button>
                     )}
-                      {status === 'completed' && (
+                    {status === 'completed' && (
                       <Button size="sm" variant="ghost">Review</Button>
                     )}
                   </div>
@@ -202,39 +202,39 @@ export const ModuleDetailsPage = () => {
             ))}
           </div>
 
-            <div className="mt-10 space-y-4">
-              <div className="flex items-center gap-2 text-forest-700 dark:text-forest-300 font-semibold uppercase text-xs tracking-[0.2em]">
-                <Files className="h-4 w-4" /> Module Quizzes
-              </div>
-
-              {quizzes.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {quizzes.map((quiz) => (
-                    <Card key={quiz.id} className="border-forest-200 dark:border-forest-900/50 bg-forest-50/60 dark:bg-forest-900/10">
-                      <div className="flex h-full flex-col justify-between gap-6">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2 text-forest-700 dark:text-forest-300 text-xs font-semibold uppercase tracking-[0.2em]">
-                            <Sparkles className="h-4 w-4" /> Quiz
-                          </div>
-                          <h3 className="font-serif text-2xl font-bold text-earth-900 dark:text-earth-50">{quiz.title}</h3>
-                          <p className="text-earth-600 dark:text-earth-400 mt-2">Review the module lessons, then take this quiz to earn XP and unlock the next step in the journey.</p>
-                        </div>
-                        <div className="flex items-center justify-between gap-4">
-                          <Badge variant="xp">Passing score {quiz.passing_score ?? 70}%</Badge>
-                          <Button size="lg" onClick={() => startQuiz(quiz.id)} disabled={lessons.length === 0}>
-                            Take Quiz
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                <Card className="border-dashed border-earth-200 bg-white/60 text-earth-600 dark:border-earth-800 dark:bg-earth-900/20 dark:text-earth-300">
-                  No quizzes are available for this module yet.
-                </Card>
-              )}
+          <div className="mt-10 space-y-4">
+            <div className="flex items-center gap-2 text-forest-700 dark:text-forest-300 font-semibold uppercase text-xs tracking-[0.2em]">
+              <Files className="h-4 w-4" /> Module Quizzes
             </div>
+
+            {quizzes.length > 0 ? (
+              <div className="grid gap-4 md:grid-cols-2">
+                {quizzes.map((quiz) => (
+                  <Card key={quiz.id} className="border-forest-200 dark:border-forest-900/50 bg-forest-50/60 dark:bg-forest-900/10">
+                    <div className="flex h-full flex-col justify-between gap-6">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2 text-forest-700 dark:text-forest-300 text-xs font-semibold uppercase tracking-[0.2em]">
+                          <Sparkles className="h-4 w-4" /> Quiz
+                        </div>
+                        <h3 className="font-serif text-2xl font-bold text-earth-900 dark:text-earth-50">{quiz.title}</h3>
+                        <p className="text-earth-600 dark:text-earth-400 mt-2">Review the module lessons, then take this quiz to earn XP and unlock the next step in the journey.</p>
+                      </div>
+                      <div className="flex items-center justify-between gap-4">
+                        <Badge variant="xp">Passing score {quiz.passing_score ?? 70}%</Badge>
+                        <Button size="lg" onClick={() => startQuiz(quiz.id)} disabled={lessons.length === 0}>
+                          Take Quiz
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="border-dashed border-earth-200 bg-white/60 text-earth-600 dark:border-earth-800 dark:bg-earth-900/20 dark:text-earth-300">
+                No quizzes are available for this module yet.
+              </Card>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -6,6 +6,9 @@ export const notFound = (_req: Request, _res: Response, next: NextFunction) => {
 }
 
 export const errorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  // eslint-disable-next-line no-console
+  console.error('Error handled by middleware:', err)
+
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json({ success: false, message: err.message })
   }

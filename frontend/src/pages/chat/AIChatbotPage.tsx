@@ -37,10 +37,10 @@ export const AIChatbotPage = () => {
     setInput('')
     setIsTyping(true)
 
-    fetch(`${API_BASE}/gemini`, {
+    fetch(`${API_BASE}/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'chat', question: currentInput }),
+      body: JSON.stringify({ question: currentInput }),
     })
       .then((res) => res.json())
       .then((payload: { data: { response: string } }) => {

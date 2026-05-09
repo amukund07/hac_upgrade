@@ -36,8 +36,7 @@ export const generateChatResponse = async (question: string, contextSnippets: st
 
   const result = await ai.models.generateContent({
     model: 'gemini-1.5-flash',
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] }
+    contents: [{ role: 'user', parts: [{ text: `${systemInstruction}\n\n${prompt}` }] }],
   })
 
   // @ts-ignore

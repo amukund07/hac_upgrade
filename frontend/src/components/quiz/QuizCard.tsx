@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { Badge } from '../ui/Badge'
-import { AnswerCard } from './AnswerCard'
+import { OptionButton } from './OptionButton'
 
 export interface QuizCardQuestion {
   id: string
@@ -29,32 +29,38 @@ export const QuizCard = ({ quizTitle, question, selectedAnswer, isRevealed, onAn
         transition={{ duration: 0.35 }}
         className="w-full max-w-3xl mx-auto"
       >
-        <div className="relative mb-6 overflow-hidden rounded-3xl border border-terracotta-200/40 bg-gradient-to-br from-earth-950 to-earth-900 p-8 shadow-[0_12px_40px_rgba(0,0,0,0.25)] dark:border-terracotta-500/20">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,104,73,0.22),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(74,103,65,0.16),transparent_30%)]" />
+        <div className="relative mb-8 overflow-hidden rounded-[2rem] border-2 border-terracotta-500/40 bg-gradient-to-br from-earth-900 via-earth-800 to-earth-900 p-8 shadow-[0_12px_40px_rgba(200,104,73,0.2)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(200,104,73,0.3),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(200,104,73,0.2),transparent_35%)]" />
           <div className="relative">
-            <Badge variant="category" className="mb-4 gap-2 border-terracotta-500/30 bg-terracotta-500/15 text-cream">
+            <Badge variant="category" className="mb-4 gap-2 border-amber-400/50 bg-amber-500/20 text-amber-50">
               <Sparkles className="h-3 w-3" />
               {quizTitle}
             </Badge>
-            <h2 className="font-serif text-3xl leading-tight text-cream md:text-4xl">{question.question}</h2>
-            <div className="mt-6 h-px bg-gradient-to-r from-transparent via-terracotta-400/40 to-transparent" />
+            <h2 className="font-serif text-3xl leading-tight text-white md:text-4xl font-bold">{question.question}</h2>
+            <div className="mt-6 h-1 bg-gradient-to-r from-transparent via-terracotta-500/60 to-transparent" />
           </div>
         </div>
 
         <div className="space-y-3">
           {(question.options ?? []).map((answer, index) => {
             const isCorrect = answer === question.correct_answer
+            const state = isRevealed
+              ? isCorrect
+                ? 'correct'
+                : selectedAnswer === index
+                  ? 'wrong'
+                  : 'idle'
+              : selectedAnswer === index
+                ? 'selected'
+                : 'idle'
 
             return (
-              <AnswerCard
+              <OptionButton
                 key={`${question.id}-${index}`}
-                text={answer}
-                isSelected={selectedAnswer === index}
-                isCorrect={isRevealed && isCorrect}
-                isWrong={isRevealed && selectedAnswer === index && !isCorrect}
-                isRevealed={isRevealed}
-                onClick={() => onAnswerSelect(index)}
+                label={answer}
+                state={state}
                 disabled={isRevealed}
+                onClick={() => onAnswerSelect(index)}
               />
             )
           })}

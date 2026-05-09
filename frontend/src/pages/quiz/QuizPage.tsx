@@ -132,8 +132,11 @@ export const QuizPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-earth-500 dark:text-earth-300">
-        Loading quiz from the database...
+      <div className="min-h-screen flex items-center justify-center text-center p-4 bg-gradient-to-b from-earth-950 via-earth-900 to-earth-950">
+        <div>
+          <div className="mb-4 h-12 w-12 rounded-full border-4 border-terracotta-500/30 border-t-terracotta-500 animate-spin mx-auto" />
+          <p className="text-lg font-semibold text-white">Loading quiz from the database...</p>
+        </div>
       </div>
     )
   }
@@ -173,8 +176,11 @@ export const QuizPage = () => {
 
   if (!question) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 text-earth-500 dark:text-earth-300">
-        Quiz questions are unavailable right now.
+      <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-earth-950 via-earth-900 to-earth-950">
+        <Card className="max-w-md w-full p-8 border-2 border-terracotta-500/40">
+          <p className="text-center text-white text-lg font-semibold">Quiz questions are unavailable right now.</p>
+          <Button className="w-full mt-6" onClick={() => navigate(-1)}>Return</Button>
+        </Card>
       </div>
     )
   }
@@ -186,13 +192,13 @@ export const QuizPage = () => {
         <QuizProgress currentQuestion={currentQuestion + 1} totalQuestions={questions.length} />
 
         <div className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 pb-36 pt-36 md:px-6">
-          <div className="mb-6 flex items-center justify-between gap-4">
-            <button onClick={() => navigate(-1)} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-terracotta-400/20 bg-earth-900/60 text-earth-200 hover:border-terracotta-400/50 hover:text-white">
-              <X className="h-5 w-5" />
+          <div className="mb-8 flex items-center justify-between gap-4">
+            <button onClick={() => navigate(-1)} className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-terracotta-500/50 bg-earth-800/80 text-white hover:border-terracotta-500 hover:text-white hover:bg-earth-700 transition-all">
+              <X className="h-6 w-6" />
             </button>
             <div className="text-right">
-              <p className="text-xs uppercase tracking-[0.28em] text-earth-400">Score</p>
-              <p className="font-serif text-2xl text-cream">{currentScore} / {questions.length}</p>
+              <p className="text-sm uppercase tracking-[0.28em] text-amber-300 font-semibold">Score</p>
+              <p className="font-serif text-3xl text-white font-bold">{currentScore} / {questions.length}</p>
             </div>
           </div>
 
