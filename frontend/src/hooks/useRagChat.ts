@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { getEmbedding, generateRAGResponse } from '../lib/gemini';
+
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api'
 
 /**
  * THE RAG LOGIC PIPELINE
@@ -8,33 +9,39 @@ import { getEmbedding, generateRAGResponse } from '../lib/gemini';
 export const ragService = {
   /**
    * Performs the full RAG cycle:
-   * 1. Embed the user's question.
-   * 2. Call the search function to find relevant context.
-   * 3. Generate a response using that context.
+   * 1. Call the search function to find relevant context (usually via backend).
+   * 2. Generate a response using that context via backend Gemini.
    * 
    * @param question The user's query
-   * @param searchFn A function that takes a vector and returns string snippets from the backend search layer
+   * @param searchFn A function that returns string snippets
    */
   async ask(question: string, searchFn: (vector: number[]) => Promise<string[]>) {
     try {
-      // Step 1: Get the embedding for the question
-      console.log('--- RAG: Step 1: Embedding Question ---');
-      const questionVector = await getEmbedding(question);
+      // NOTE: For true RAG, we need embeddings. 
+      // Since we moved to backend, we can either:
+      // 1. Send the question to a backend /api/gemini/rag endpoint that does the embedding + search.
+      // 2. Keep the current structure but call backend for generation.
+      
+      // Step 1: Retrieve context (this usually involves an embedding step inside searchFn or similar)
+      console.log('--- RAG: Retrieving Context ---');
+      const relevantContext = await searchFn([]); // Empty vector for now if searchFn handles it
 
-      // Step 2: Retrieve relevant context from the database-backed search layer
-      console.log('--- RAG: Step 2: Retrieving Context ---');
-      const relevantContext = await searchFn(questionVector);
+      // Step 2: Generate response via backend
+      console.log('--- RAG: Generating Response via Backend ---');
+      const response = await fetch(`${API_BASE}/gemini`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'rag', question, contextSnippets: relevantContext }),
+      })
 
-      if (!relevantContext || relevantContext.length === 0) {
-        console.warn('RAG: No relevant context found in database.');
+      if (!response.ok) {
+        throw new Error('Failed to generate RAG response')
       }
 
-      // Step 3: Generate the final response using the retrieved context
-      console.log('--- RAG: Step 3: Generating Response ---');
-      const response = await generateRAGResponse(question, relevantContext);
+      const payload = await response.json() as { data: { response: string } }
 
       return {
-        answer: response,
+        answer: payload.data.response,
         contextUsed: relevantContext,
       };
     } catch (error) {

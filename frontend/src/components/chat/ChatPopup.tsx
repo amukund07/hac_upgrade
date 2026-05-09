@@ -47,7 +47,7 @@ export const ChatPopup = () => {
         const audioBase64 = payload.data?.audioBase64
 
         if (audioBase64) {
-          const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`)
+          const audio = new Audio(`data:audio/wav;base64,${audioBase64}`)
           await audio.play()
           return
         }
@@ -80,24 +80,48 @@ export const ChatPopup = () => {
     }
   }
 
-  const handleSend = (event?: React.FormEvent) => {
+  const handleSend = async (event?: React.FormEvent) => {
     event?.preventDefault()
     if (!input.trim()) return
 
     const userMessage: ChatMessage = { id: Date.now().toString(), role: 'user', text: input }
     setMessages((previous) => [...previous, userMessage])
+    const currentInput = input
     setInput('')
     setIsTyping(true)
 
-    setTimeout(() => {
-      const elderMessage: ChatMessage = {
+    try {
+      const response = await fetch(`${API_BASE}/gemini`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'chat', question: currentInput }),
+      })
+
+      if (response.ok) {
+        const payload = await response.json() as { data: { response: string } }
+        const elderMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          role: 'elder',
+          text: payload.data.response
+        }
+        setMessages((previous) => [...previous, elderMessage])
+        
+        // Automatically speak the elder's response
+        void speakText(payload.data.response)
+      } else {
+        throw new Error('Failed to get chat response')
+      }
+    } catch (error) {
+      console.error('Chat error:', error)
+      const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'elder',
-        text: 'The ancestors say: "He who learns, teaches." Your curiosity honors our traditions. Let me share a tale about that...'
+        text: 'The spirits are restless and communication is difficult right now. Please try again.'
       }
-      setMessages((previous) => [...previous, elderMessage])
+      setMessages((previous) => [...previous, errorMessage])
+    } finally {
       setIsTyping(false)
-    }, 2000)
+    }
   }
 
   const SUGGESTED_PROMPTS = [

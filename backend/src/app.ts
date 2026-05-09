@@ -10,6 +10,8 @@ import leaderboardRoutes from './routes/leaderboardRoutes'
 import achievementRoutes from './routes/achievementRoutes'
 import userRoutes from './routes/userRoutes'
 import ttsRoutes from './routes/ttsRoutes'
+import chatRoutes from './routes/chatRoutes'
+import geminiRoutes from './routes/geminiRoutes'
 import { errorHandler, notFound } from './middleware/errorMiddleware'
 
 export const app = express()
@@ -35,6 +37,7 @@ app.use('/api/leaderboard', leaderboardRoutes)
 app.use('/api/achievements', achievementRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/tts', ttsRoutes)
+app.use('/api/gemini', geminiRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

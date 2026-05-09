@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Loader2, Send, Sparkles, Volume2 } from 'lucide-react'
 import { Card } from '../../components/ui/Card'
-import { generateRAGResponse } from '../../lib/gemini'
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api'
 
@@ -34,17 +33,26 @@ export const AIChatbotPage = () => {
 
     const userMessage: Message = { id: Date.now().toString(), role: 'user', text: input }
     setMessages((previous) => [...previous, userMessage])
+    const currentInput = input
     setInput('')
     setIsTyping(true)
 
-    void generateRAGResponse(input, [])
-      .then((reply) => {
+    fetch(`${API_BASE}/gemini`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'chat', question: currentInput }),
+    })
+      .then((res) => res.json())
+      .then((payload: { data: { response: string } }) => {
         const elderMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'elder',
-          text: reply,
+          text: payload.data.response,
         }
         setMessages((previous) => [...previous, elderMessage])
+        
+        // Optionally speak the reply automatically
+        void readLatestReply()
       })
       .catch(() => {
         setMessages((previous) => [...previous, {
@@ -79,7 +87,7 @@ export const AIChatbotPage = () => {
         const audioBase64 = payload.data?.audioBase64
 
         if (audioBase64) {
-          const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`)
+          const audio = new Audio(`data:audio/wav;base64,${audioBase64}`)
           await audio.play()
           return
         }
