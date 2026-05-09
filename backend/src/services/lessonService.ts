@@ -4,6 +4,7 @@ import { UserModuleProgressModel } from '../models/UserModuleProgress'
 import { LearningModuleModel } from '../models/LearningModule'
 import { ApiError } from '../utils/errors'
 import { serializeDocument } from '../utils/serializers'
+import { incrementUserXP } from './authService'
 
 export const getLessonById = async (lessonId: string) => {
   const lesson = await LessonModel.findById(lessonId)
@@ -31,6 +32,9 @@ export const completeLesson = async (userId: string, lessonId: string) => {
     },
     { upsert: true, new: true },
   )
+
+  // Add XP for completing a lesson (e.g., 50 XP)
+  await incrementUserXP(userId, 50)
 
   const module = await LearningModuleModel.findById(lesson.module_id)
   if (module) {

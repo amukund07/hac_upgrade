@@ -37,10 +37,10 @@ export const AIChatbotPage = () => {
     setInput('')
     setIsTyping(true)
 
-    fetch(`${API_BASE}/chat`, {
+    fetch(`${API_BASE}/chat/query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: currentInput }),
+      body: JSON.stringify({ query: currentInput }),
     })
       .then((res) => res.json())
       .then((payload: { data: { response: string } }) => {
@@ -127,7 +127,7 @@ export const AIChatbotPage = () => {
         </div>
         <div>
           <h1 className="font-serif text-2xl font-bold text-cream">Elder Spirit Guide</h1>
-          <p className="text-sm text-earth-300">Ask about traditions, nature, and history.</p>
+          <p className="text-sm text-earth-100">Ask about traditions, nature, and history.</p>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export const AIChatbotPage = () => {
                   className={`max-w-[80%] rounded-3xl p-4 text-sm leading-relaxed ${
                     message.role === 'user'
                       ? 'rounded-br-md bg-gradient-to-br from-terracotta-500 to-burnt-orange-500 text-white shadow-[0_14px_30px_rgba(200,104,73,0.2)]'
-                      : 'rounded-bl-md border border-terracotta-500/15 bg-[#2d1f19] text-cream shadow-[0_10px_28px_rgba(0,0,0,0.18)]'
+                      : 'rounded-bl-md border border-terracotta-500/15 bg-[#2d1f19] text-white shadow-[0_10px_28px_rgba(0,0,0,0.18)]'
                   }`}
                 >
                   {message.role === 'elder' && <Sparkles className="mb-2 h-4 w-4 text-terracotta-300 opacity-80" />}

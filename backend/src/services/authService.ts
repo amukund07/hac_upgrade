@@ -15,7 +15,7 @@ type RegisterInput = {
 type UpdateUserInput = {
   name?: string
   avatar_url?: string
-  x_points?: number
+  xp_points?: number
   level?: number
   streak?: number
 }
@@ -57,6 +57,35 @@ export const registerUser = async ({ name, email, password }: RegisterInput) => 
   }
 }
 
+const checkAndUpdateStreak = (user: any) => {
+  const now = new Date()
+  const lastLogin = user.last_login_at
+  
+  if (lastLogin) {
+    // Set both to start of day for accurate day-based comparison
+    const lastDate = new Date(lastLogin)
+    lastDate.setHours(0, 0, 0, 0)
+    
+    const currentDate = new Date(now)
+    currentDate.setHours(0, 0, 0, 0)
+    
+    const timeDiff = currentDate.getTime() - lastDate.getTime()
+    const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24))
+    
+    if (dayDiff === 1) {
+      user.streak += 1
+    } else if (dayDiff > 1) {
+      user.streak = 1
+    } else if (dayDiff === 0 && user.streak === 0) {
+      user.streak = 1
+    }
+  } else {
+    user.streak = 1
+  }
+
+  user.last_login_at = now
+}
+
 export const loginUser = async ({ email, password }: RegisterInput) => {
   const user = await UserModel.findOne({ email })
 
@@ -70,7 +99,7 @@ export const loginUser = async ({ email, password }: RegisterInput) => {
     throw new ApiError(401, 'Invalid email or password')
   }
 
-  user.last_login_at = new Date()
+  checkAndUpdateStreak(user)
   await user.save()
 
   const token = generateToken({ id: String(user._id), email: user.email })
@@ -88,6 +117,8 @@ export const getCurrentUser = async (userId: string) => {
     throw new ApiError(404, 'User not found')
   }
 
+  checkAndUpdateStreak(user)
+  await user.save()
   return stripPassword(serializeDocument(user))
 }
 
@@ -106,9 +137,9 @@ export const updateCurrentUser = async (userId: string, updates: UpdateUserInput
     user.avatar_url = updates.avatar_url
   }
 
-  if (typeof updates.x_points === 'number') {
-    user.xp_points = updates.x_points
-    user.level = calculateLevel(updates.x_points)
+  if (typeof updates.xp_points === 'number') {
+    user.xp_points = updates.xp_points
+    user.level = calculateLevel(updates.xp_points)
   }
 
   if (typeof updates.level === 'number') {

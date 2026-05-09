@@ -9,7 +9,7 @@ type SendResponseArgs<T> = {
 
 export const sendResponse = <T>({ res, statusCode, data, message }: SendResponseArgs<T>) => {
   return res.status(statusCode).json({
-    success: true,
+    success: statusCode >= 200 && statusCode < 300,
     message,
     data,
   })

@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "generate-embeddings": "tsx scripts/generateEmbeddings.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.3.0",
     "axios": "^1.6.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
@@ -16,6 +18,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.0",
+    "uuid": "^9.0.0",
     "wav": "^1.0.2"
   },
   "devDependencies": {
@@ -24,6 +27,7 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.12.2",
+    "@types/uuid": "^10.0.0",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }

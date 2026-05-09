@@ -7,9 +7,20 @@ type ChatMessage = {
   id: string
   role: 'user' | 'elder'
   text: string
+  sources?: Array<{ title: string; domain: string; similarity: number }>
 }
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:5000/api'
+
+// Generate or retrieve session ID from localStorage
+const getOrCreateSessionId = (): string => {
+  let sessionId = localStorage.getItem('wisdom_guide_session')
+  if (!sessionId) {
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    localStorage.setItem('wisdom_guide_session', sessionId)
+  }
+  return sessionId
+}
 
 export const ChatPopup = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,6 +31,7 @@ export const ChatPopup = () => {
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [sessionId] = useState(() => getOrCreateSessionId())
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -91,32 +103,44 @@ export const ChatPopup = () => {
     setIsTyping(true)
 
     try {
-      const response = await fetch(`${API_BASE}/gemini`, {
+      // Call the new RAG chat endpoint
+      const response = await fetch(`${API_BASE}/chat/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'chat', question: currentInput }),
+        body: JSON.stringify({
+          query: currentInput,
+          sessionId, // Include session ID for conversation continuity
+        }),
       })
 
       if (response.ok) {
-        const payload = await response.json() as { data: { response: string } }
+        const payload = await response.json() as {
+          data: {
+            response: string
+            sources?: Array<{ title: string; domain: string; similarity: number }>
+            responseTime?: number
+          }
+        }
+
         const elderMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
           role: 'elder',
-          text: payload.data.response
+          text: payload.data.response,
+          sources: payload.data.sources,
         }
         setMessages((previous) => [...previous, elderMessage])
-        
+
         // Automatically speak the elder's response
         void speakText(payload.data.response)
       } else {
-        throw new Error('Failed to get chat response')
+        throw new Error(`API responded with status ${response.status}`)
       }
     } catch (error) {
       console.error('Chat error:', error)
       const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'elder',
-        text: 'The spirits are restless and communication is difficult right now. Please try again.'
+        text: 'The spirits are restless and communication is difficult right now. Please try again.',
       }
       setMessages((previous) => [...previous, errorMessage])
     } finally {
@@ -153,7 +177,7 @@ export const ChatPopup = () => {
                     <h3 className="font-serif text-sm font-bold text-cream">Elder Spirit Guide</h3>
                     <div className="flex items-center gap-1">
                       <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                      <span className="text-[10px] font-medium text-earth-300">Online</span>
+                      <span className="text-[10px] font-medium text-earth-100">Online</span>
                     </div>
                   </div>
                 </div>
@@ -183,17 +207,37 @@ export const ChatPopup = () => {
                 <>
                   <div className="flex-1 min-h-0 space-y-4 overflow-y-auto bg-[radial-gradient(circle_at_top,rgba(200,104,73,0.10),transparent_40%)] p-4">
                     {messages.map((message) => (
-                      <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div
-                          className={`max-w-[85%] rounded-3xl p-3 text-sm leading-relaxed ${
-                            message.role === 'user'
-                              ? 'rounded-br-md bg-gradient-to-br from-terracotta-500 to-burnt-orange-500 text-white shadow-[0_14px_30px_rgba(200,104,73,0.22)]'
-                              : 'rounded-bl-md border border-terracotta-500/15 bg-[#2d1f19] text-cream shadow-[0_10px_30px_rgba(0,0,0,0.18)]'
-                          }`}
-                        >
-                          {message.role === 'elder' && <Sparkles className="mb-2 h-4 w-4 text-terracotta-300 opacity-80" />}
-                          <p>{message.text}</p>
+                      <div key={message.id}>
+                        <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div
+                            className={`max-w-[85%] rounded-3xl p-3 text-sm leading-relaxed ${
+                              message.role === 'user'
+                                  ? 'rounded-br-md bg-gradient-to-br from-terracotta-500 to-burnt-orange-500 text-white shadow-[0_14px_30px_rgba(200,104,73,0.22)]'
+                                : 'rounded-bl-md border border-terracotta-500/15 bg-[#2d1f19] text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]'
+                            }`}
+                          >
+                            {message.role === 'elder' && (
+                              <Sparkles className="mb-2 h-4 w-4 text-terracotta-300 opacity-80" />
+                            )}
+                            <p>{message.text}</p>
+                          </div>
                         </div>
+
+                        {/* Display retrieved sources */}
+                        {message.role === 'elder' && message.sources && message.sources.length > 0 && (
+                          <div className="mt-2 flex justify-start">
+                            <div className="max-w-[85%] space-y-1 rounded-lg border border-terracotta-500/10 bg-[#3d2817]/30 p-2 text-[10px] text-earth-300">
+                              <p className="font-semibold text-terracotta-300">Sources:</p>
+                              {message.sources.map((source, idx) => (
+                                <div key={idx} className="text-earth-400">
+                                  <span className="text-terracotta-300">{source.domain}</span>
+                                  {source.title && <> • {source.title}</>}
+                                  <span className="text-earth-100"> ({(source.similarity * 100).toFixed(0)}%)</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
 

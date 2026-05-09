@@ -37,6 +37,7 @@ app.use('/api/leaderboard', leaderboardRoutes)
 app.use('/api/achievements', achievementRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/tts', ttsRoutes)
+app.use('/api/chat', chatRoutes)
 app.use('/api/gemini', geminiRoutes)
 
 app.use(notFound)

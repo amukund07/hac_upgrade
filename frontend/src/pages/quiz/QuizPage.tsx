@@ -41,11 +41,11 @@ export const QuizPage = () => {
       }
 
       setIsLoading(true)
-      const quizResponse = await apiClient.get<QuizPayload>(`/quizzes/${id}`)
-      const questionResponse = await getQuizQuestions(id)
+      const quizEnvelope = await apiClient.get<any>(`/quizzes/${id}`)
+      const questionEnvelope = await getQuizQuestions(id)
 
-      setQuiz(quizResponse.data ?? null)
-      setQuestions(questionResponse.data ?? [])
+      setQuiz(quizEnvelope.data?.data ?? null)
+      setQuestions((questionEnvelope.data as any) ?? [])
       setIsLoading(false)
     }
 
